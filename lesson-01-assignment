@@ -1,11 +1,12 @@
 #1. Find course record for the Spring 2025 Intro to Programming
 intro = CodingClass.find_by({ title: 'Intro to Programming' }) #maps to DB table coding_classes; find_by - finder method
 # { title: 'Intro to Programming' } - A Ruby hash is a collection of key, value pairs
-spring_2025 = Trimester.find_by(year: '2025', term: 'Spring')
+spring_2025 = Trimester.find_by(year: 2025, term: 'Spring') # year: 2025 changed from string
 
 #2. We can get the LIST OF COURSE records for that trimester by using a finder method on Course model
 #We r looking for courses where trimester is Fall 2025 or where trimester id is the id we had identifies
-#upcoming_courses = Course.where(trimester_id: 7)
+fall_2025 = Trimester.find_by(year: 2025, term: 'Fall')
+upcoming_courses = Course.where(trimester_id: fall_2025.id) #uncommented and replaced with object
 
 #3 Now, we need to get the list of course names for these courses
 #CodingClass.find_by(id: 1)
@@ -18,7 +19,7 @@ end
 #Need a list of emails for students in the current intro course
 
 course = Course.find_by(coding_class: intro, trimester: spring_2025)
-enrollments = Enrollment.where(course_id: course)
+enrollments = Enrollment.where(course: course) #replaced course_id: course as per reviewer's comments for simplification
 students  = enrollments.first(2).map(&:student)
 students.each do |student|
     puts "Student: #{student.first_name} #{student.last_name}"
@@ -30,10 +31,11 @@ end
 # Intro to Programming course who do not yet have a final grade
 
 #first find students with no grades which is in enrollment table
-not_graded = Enrollment.where(final_grade: nil)
+not_graded = Enrollment.where(course: course, final_grade: nil)
 #then connect enrollment id with mentor id in mentorenrollments table
-mentor_enrollments = MentorEnrollmentAssignment.where(enrollment_id: not_graded.pluck(:id))
+mentor_enrollments = MentorEnrollmentAssignment.where(enrollment_id: not_graded.select(:id))
 mentors_id = mentor_enrollments.pluck(:mentor_id).uniq
+mentors_to_email = Mentor.where(id: mentors_id) #defined mentors_to_email
 mentors_to_email.first(2).each do |mentor|
     puts "Mentor: #{mentor.id}"
     puts "Email: #{mentor.email}"
