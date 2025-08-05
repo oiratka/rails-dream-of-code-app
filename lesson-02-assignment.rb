@@ -1,11 +1,11 @@
 #QUESTION 1 
-Trimester.create(year: '2026', term: 'Spring', application_deadline: '2026-02-15', start_date: '2026-03-01', end_date: '2026-05-31')
+Trimester.create(year: 2026, term: 'Spring', application_deadline: '2026-02-15', start_date: '2026-03-01', end_date: '2026-05-31') #year from string to integer
 #TRANSACTION (0.0ms)  BEGIN immediate TRANSACTION /*application='DocRails'*/
 #Trimester Create (0.6ms)  INSERT INTO "trimesters" ("year", "term", "application_deadline", "start_date", "end_date", "created_at", "updated_at") VALUES ('2026', 'Spring', '2026-02-15', '2026-03-01', '2026-05-31', '2025-07-26 00:58:13.910265', '2025-07-26 00:58:13.910265') RETURNING "id" /*application='DocRails'*/
 #TRANSACTION (0.2ms)  COMMIT TRANSACTION /*application='DocRails'*/
 #<Trimester:0x000000010720c828
  id: 9,
- year: "2026",
+ year: 2026,
  term: "Spring",
  application_deadline: "2026-02-15",
  start_date: "2026-03-01",
@@ -13,7 +13,7 @@ Trimester.create(year: '2026', term: 'Spring', application_deadline: '2026-02-15
  created_at: "2025-07-26 00:58:13.910265000 +0000",
  updated_at: "2025-07-26 00:58:13.910265000 +0000">
 
- spring_2026 = Trimester.find_by(year: '2026', term: 'Spring')
+ spring_2026 = Trimester.find_by(year: 2026, term: 'Spring')
 
  CodingClass.find_each do |coding_class|
   puts "Creating new course for #{coding_class.title}"
@@ -32,7 +32,8 @@ Trimester.create(year: '2026', term: 'Spring', application_deadline: '2026-02-15
   last_name: "Walker",
   email: "alisha.walker@testam-net.com"
  )
- course = Course.find(1)
+ intro_class = CodingClass.find_by(title: 'Intro to Programming')
+ course = Course.find_by(coding_class: intro_class, trimester: spring_2026) # updated hard coded course = Course.find(1)
  student = Student.last
  enrollment = Enrollment.create!(
   student: student,
